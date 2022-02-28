@@ -25,45 +25,29 @@ go_p_score_row<-function(genecount,descore,path_size){
 
 
 ##' @title Calculating eigenvector centrality of subpathways
-##' @description The function "DE2SubPath" is used to calculate the eigenvector centrality of subpathways.
-##' According to our method, in this function, the user needs to input 6 variables. All six variables can obtain from our example data, those data from KEGG and GO, and the user can also change at will.
-##' @param inexpData A gene expression profile of interest (rows are genes, columns are samples).The data in the expression profile is best not be log2 converted.
+##' @description The function "CalCentralityScore" is used to calculate the eigenvector centrality of subpathways.
+##' @param ExpData A gene expression profile of interest (rows are genes, columns are samples).
 ##' @param Label A character vector consist of "0" and "1" which represent sample class in gene expression profile. "0" means normal sample and "1" means disease sample.
-##' @param Subpathway Subpathway information from SubpathwayMiner.
-##' @param Go  Biological Process data from Gene Ontology.
-##' @param Jaccard Jaccard score shared by a subpathway with Biological Process.
-##' @param Go_SubPath_gene Genes symble shared by a subpathway with Biological Process.
-##' @param perm A boolean value. If perm=TRUE, the permutations will be implemented.
 ##' @param nperm Number of random permutations (default: 1000).
-##' @return A dataframe with seven columns those are subpath ID, subpath name, subpath size, genes in subpath, centralscore (eigenvector centrality), Pvalue and FDR.
+##' @return A dataframe with seven columns those are subpathway ID, subpathway name, subpathway size, genes in subpathway, centralscore (eigenvector centrality), Pvalue and FDR.
 ##' @importFrom igraph graph.adjacency
 ##' @importFrom igraph V
 ##' @importFrom igraph page.rank
 ##' @importFrom stats median
-##' @usage DE2SubPath(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,perm=FALSE,nperm=1000)
+##' @usage CalCentralityScore(ExpData,Label,nperm=1000)
 ##' @export
 ##' @examples
 ##' library(igraph)
 ##' #Obtain input data
 ##' GEP<-GetExample('GEP')
-##' label<-GetExample('label')
-##' SubPathwayInfo<-GetExample('SubPathwayInfo')
-##' GoInfo<-GetExample('GoInfo')
-##' Jaccardscore<-GetExample('Jaccardscore')
-##' GoSubPconGene<-GetExample('GoSubPconGene')
+##' Slabel<-GetExample('Slabel')
 ##' #Run the function
-##' \donttest{DE2SubPathresult<-DE2SubPath(inexpData=GEP,Label=label,Subpathway=SubPathwayInfo,
-##'                       Go=GoInfo,Jaccard=Jaccardscore,Go_SubPath_gene=GoSubPconGene,
-##'                       perm=FALSE)
-##'
-##' DE2SubPathresult_P<-DE2SubPath(inexpData=GEP,Label=label,Subpathway=SubPathwayInfo,
-##'                       Go=GoInfo,Jaccard=Jaccardscore,Go_SubPath_gene=GoSubPconGene,
-##'                       perm=TRUE)}
+##' \donttest{CentralityScoreResult<-CalCentralityScore(ExpData=GEP,Label=Slabel,nperm=1000)}
 
 
 
-DE2SubPath <- function(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,
-                       perm=FALSE,nperm=1000){
+CalCentralityScore <- function(ExpData,Label,nperm=1000){
+
   haveigraph <- PackageLoaded("igraph")
   havestats <- PackageLoaded("stats")
   if (haveigraph == FALSE) {
@@ -72,7 +56,14 @@ DE2SubPath <- function(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,
   if (havestats == FALSE) {
     stop("The 'stats' library, should be loaded first")
   }
-  DE<-getDEscore(inexpData,Label)
+
+  Subpathway<-GetExample('SubPathwayInfo')
+  Go<-GetExample('GoInfo')
+  Jaccard<-GetExample('Jaccardscore')
+  Go_SubPath_gene<-GetExample('GoSubPconGene')
+
+  DE<-getDEscore(ExpData,Label)
+  DE<-as.matrix(DE[which(abs(DE[,1])<100),])
   kegg<-cbind(as.character(Subpathway[,"SubPathID"]),as.character(Subpathway[,"Gene"]))
   path_size<-length(kegg[,1])
   go<-as.matrix(Go)
@@ -99,7 +90,21 @@ DE2SubPath <- function(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,
   temp = page.rank(graph, vids=V(graph), directed=FALSE, damping=0.90, weights=NULL)
   rank = temp$vector
   rank1 = as.matrix(rank)
-  if(perm==TRUE){
+
+  if (nperm == 0) {
+    p <- rep(1, length(Subpathway[, 1]))
+    fdr <- p
+    allresult <- cbind(Subpathway, rank1)
+    allresult <- cbind(allresult, p)
+    allresult <- cbind(allresult, fdr)
+    allresult[, 1] <- as.character(allresult[, 1])
+    colnames(allresult) <- c("SubPathID", "SubPathway",
+                             "Size", "Gene", "Centralscore",
+                             "Pvalue", "FDR")
+    result <- as.data.frame(allresult)
+    rankresult <- result[order(result$SubPathID), ]
+    rownames(rankresult) <- c(1:dim(kegg)[1])
+  }else{
     iter<-nperm
     Centrality_Scores<-matrix(nrow=path_size,ncol=iter+1)
     real.centra<-rank1
@@ -118,6 +123,7 @@ DE2SubPath <- function(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,
     }
     adj = as.matrix(Centrality_Scores)
     perm_rank = adj[,2:(iter+1)]
+    perm_rank<-as.matrix(perm_rank)
     orig_rank = adj[,1]
     pval = matrix(data=NA, nrow=path_size, ncol=1)
     for ( j in 1:path_size ) {
@@ -135,18 +141,6 @@ DE2SubPath <- function(inexpData,Label,Subpathway,Go,Jaccard,Go_SubPath_gene,
     rankresult<-result[order(result$`Pvalue`), ]
     rownames(rankresult)<-c(1:dim(kegg)[1])
   }
-  if(perm==FALSE){
-    p<-rep(1,length(Subpathway[,1]))
-    fdr<-p
-    allresult<-cbind(Subpathway,rank1)
-    allresult<-cbind(allresult,p)
-    allresult<-cbind(allresult,fdr)
-    allresult[,1]<-as.character(allresult[,1])
-    colnames(allresult)<-c("SubPathID","SubPathway","Size","Gene","Centralscore","Pvalue","FDR")
-    result<-as.data.frame(allresult)
-    ###rank
-    rankresult<-result[order(result$`SubPathID`), ]
-    rownames(rankresult)<-c(1:dim(kegg)[1])
-  }
+  rankresult$Centralscore<-round(rankresult$Centralscore,4)
   return(rankresult)
 }

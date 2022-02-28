@@ -1,8 +1,7 @@
 #' @title Get example data
 #' @description This function is used to achieve exxample data.
-#' @param exampleData  A character, should be one of"GEP","label","SubPathwayInfo","GoInfo","GoSubPconGene",
-#' "Jaccardscore","SubPathwaymapdata","Drugs_CID","DE2SubPathresult","DE2SubPathresult_P",
-#' "Opdrugresult" and "heatmap.list".
+#' @param exampleData  A character, should be one of"GEP","Slabel",
+#' "CentralityScoreResult","Opdrugresult" and "heatmap.list".
 #' @return example data
 #' @usage GetExample(exampleData)
 #' @export
@@ -18,9 +17,9 @@ GetExample<-function(exampleData){
     dataset<- get("GEP",envir=envData)
     return(dataset)
   }
-  if (exampleData=="label")
+  if (exampleData=="Slabel")
   {
-    dataset<- get("label",envir=envData)
+    dataset<- get("Slabel",envir=envData)
     return(dataset)
   }
   if (exampleData=="SubPathwayInfo")
@@ -53,14 +52,9 @@ GetExample<-function(exampleData){
     dataset<- get("Drugs_CID",envir=envData)
     return(dataset)
   }
-  if (exampleData=="DE2SubPathresult")
+  if (exampleData=="CentralityScoreResult")
   {
-    dataset<- get("DE2SubPathresult",envir=envData)
-    return(dataset)
-  }
-  if (exampleData=="DE2SubPathresult_P")
-  {
-    dataset<- get("DE2SubPathresult_P",envir=envData)
+    dataset<- get("CentralityScoreResult",envir=envData)
     return(dataset)
   }
   if (exampleData=="Opdrugresult")

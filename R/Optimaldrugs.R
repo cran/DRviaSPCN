@@ -49,56 +49,91 @@ CalculateSES<-function (labels.list, correl.vector = NULL) {
 
 
 #'@title Identifying the optimal drugs
-#'@description Function "optimaldrugs" used to identify the optimal drugs for specific disease.
-#'@param SubPathscore A dataframe with three columns which are "SubPathID","Weighted-ES","Pvalue" (The result of function "getSubPathscore").
-#'@param Drug_Pscore_matrix A matrix with n rows and m columns. n is the number of subpathways and m is the number of all drugs. The values in this matrix is weighted enrichmentscore of subpathways in every drug. The users could obtain this matrix from our example data.
+#'@description Function "Optimaldrugs" used to identify the optimal drugs for specific disease.
+#'@param ExpData A gene expression profile of interest (rows are genes, columns are samples).
+#'@param Label A character vector consist of "0" and "1" which represent sample class in gene expression profile. "0" means normal sample and "1" means disease sample.
+#'@param DrugSPESC A matrix with n rows and m columns. n is the number of subpathways and m is the number of all drugs. The values in this matrix is weighted enrichmentscore of subpathways induced by each drug. The users could obtain this matrix from our example data.
+#'@param CentralityScore The result of function "CalCentralityScore".
 #'@param nperm Number of random permutations (default: 1000).
-#'@param cut There are two ways to select up-regulated and down-regulated subpathways. The up-regulated subpathways (down-regulated subpathways) is the top (bottom) subpathways of list in descending order of weighted enrichmentscore (weighted-ES) when cut="top". When cut="p",up-regulated subpathways and down-regulated subpathways is screened based on ES and pvalue in the results of GSEA.
-#'@param topcut When cut="top", topcut represents the number of selected up-regulated subpathways or down-regulated subpathways.The topcut defaults to 20.
-#'@param pcut When cut="p", pcut represents the threshold of statistical significance level for screen subpathways. The pcut defaults to 0.05.
+#'@param topcut The parameter "topcut" represents the number of selected SPs from the top or bottom of the ranked SP list. The topcut defaults to 10.
+#'@param pcut The parameter "pcut" represents the threshold of statistical significance for screen SPs. The pcut defaults to 0.01.
 #'@param weight A boolean value determines the method for calculating the drug-disease association score of the drug. "weight=FALSE"(default): Similar to "CMap" (Lamb et al., 2006), no weight is needed. "weight=TRUE": KS random walk statistic with individualized subpathway activity score as weight was used to calculate the drug-disease reverse association score.
-#'@return A dataframe with four columns which are "Drug"(drug names),"KS"(final drug-disease assciation score),"pvalue"(statistical significance),"FDR"(statistical significance after adjust).
+#'@return A dataframe with four columns which are "Drug"(drug names),"DES"(drug enrichment score),"p-value"(statistical significance),"FDR"(adjusted statistical significance).
 #'@importFrom stats p.adjust
-#'@usage optimaldrugs(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',
-#'                    topcut=20,pcut=0.05,weight=FALSE)
+#'@importFrom clusterProfiler GSEA
+#'@usage Optimaldrugs(ExpData,Label,DrugSPESC,CentralityScore,nperm=1000,
+#'                    topcut=10,pcut=0.01,weight=FALSE)
 #'@export
 #'@examples
 #'##Obtain input data
-#'#Weighted enrichmentscore of subpathways this function need were stored
-#'#in packet "DRviaSPCNData". "DRviaSPCNData" has been uploaded to the
+#'#Weighted enrichmentscore of subpathways induced by each drug were stored
+#'#in package "DRviaSPCNData". "DRviaSPCNData" has been uploaded to the
 #'#github repository.Users can download and install through "install_github"
 #'#function and set parameter url="hanjunwei-lab/DRviaSPCNData".
 #'#After installing and loading package "DRviaSPCNData",
 #'#users can use the following command to get the data.
-#'#DrugPscoreMatrix<-Getlist('DrugPscoreMatrix')
-#'DE2SubPathresult<-GetExample("DE2SubPathresult")
+#'#DrugSPESCMatrix<-GetData('DrugSPESCMatrix')
+#'CentralityScoreResult<-GetExample("CentralityScoreResult")
 #'GEP<-GetExample("GEP")
-#'label<-GetExample("label")
-#'\donttest{
-#'SubPathscore<-getSubpathscore(DE2SubPathresult=DE2SubPathresult,inexpData=GEP,Label=label)
-#'#Run the function
-#'Opdrugresult<-optimaldrugs(SubPathscore=SubPathscore,Drug_Pscore_matrix=DrugPscoreMatrix,
-#'                           nperm=1000,cut='p',topcut=20,pcut=0.01,weight=FALSE)}
+#'Slabel<-GetExample("Slabel")
+#'\donttest{#Run the function
+#'Opdrugresult<-Optimaldrugs(ExpData=GEP,Label=Slabel,DrugSPESC=DrugSPESCMatrix,
+#' CentralityScore=CentralityScoreResult,nperm=1000,topcut=10,pcut=0.01,weight=FALSE)}
 
 
-optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topcut=20,
-                       pcut=0.05,weight=FALSE){
+Optimaldrugs<-function(ExpData,Label,DrugSPESC,CentralityScore,nperm=1000,topcut=10,
+                       pcut=0.01,weight=FALSE){
   havestats <- PackageLoaded("stats")
   if (havestats == FALSE) {
     stop("The 'stats' library, should be loaded first")
   }
-  if(cut=='top'){
-    SubPathscore<-SubPathscore[order(SubPathscore[,2],decreasing = TRUE),]
-    uppath<-SubPathscore[,1][1:topcut]
-    downpath<-SubPathscore[,1][(length(SubPathscore[,1])-(topcut-1)):length(SubPathscore[,1])]
+
+  DE<-getDEscore(ExpData,Label)
+  DE<-as.matrix(DE[which(abs(DE[,1])<100),])
+  pathset<-data.frame(path='1',gene='1')
+  for (i in 1:length(CentralityScore[,'SubPathID'])) {
+    n<-CentralityScore[,'SubPathID'][i]
+    g<-unlist(strsplit(CentralityScore[i,'Gene'],','))
+    ps<-data.frame(path=rep(n,length(g)),gene=g)
+    pathset<-rbind(pathset,ps)
   }
-  if(cut=='p'){
-    uppath<-SubPathscore[SubPathscore[,2]>0&SubPathscore[,3]<pcut,1]
-    downpath<-SubPathscore[SubPathscore[,2]<0&SubPathscore[,3]<pcut,1]
-  }
+  pathset<-pathset[-1,]
+  pathset[,1]<-as.character(pathset[,1])
+  pathset[,2]<-as.character(pathset[,2])
+  diseasegene<-DE[,1]
+  names(diseasegene)<-rownames(DE)
+  diseasegene<-sort(diseasegene,decreasing = T)
+
+
+  diseaseES<-GSEA(diseasegene, TERM2GENE =pathset,exponent=1,minGSSize=0,
+                  pAdjustMethod = "fdr", pvalueCutoff = 1)
+
+  diseaseES<-diseaseES@result[,c(1,4,6)]
+
+  diseasecentral<-as.numeric(CentralityScore[,'Centralscore'])
+  names(diseasecentral)<-as.character(CentralityScore[,'SubPathID'])
+
+  diseasecentral<-diseasecentral[match(rownames(diseaseES),names(diseasecentral))]
+  a<-(sum(diseasecentral^2))^0.5
+  b<-1+(diseasecentral/a)
+  pathscore<-b*diseaseES[,2]
+  result<-cbind(diseaseES[,1],pathscore)
+  result1<-cbind(result,diseaseES[,3])
+  result1<-as.data.frame(result1)
+  result1[,1]<-as.character(result1[,1])
+  result1[,2]<-as.numeric(as.character(result1[,2]))
+  result1[,3]<-as.numeric(as.character(result1[,3]))
+  colnames(result1)<-c('SubPathID','Weighted-ES','Pvalue')
+  SubPathscore<-result1
+
+  SubPathscore<-SubPathscore[order(SubPathscore[,2],decreasing = T),]
+
+  uppath <- union(SubPathscore[SubPathscore[, 2] > 0 & SubPathscore[,3] < pcut, 1], SubPathscore[1:topcut,1])
+  downpath <- union(SubPathscore[SubPathscore[, 2] < 0 & SubPathscore[,3] < pcut, 1],
+                    SubPathscore[(length(SubPathscore[,1])-topcut+1):length(SubPathscore[,1]),1])
   if(weight==FALSE){
-    ks_up <- apply(Drug_Pscore_matrix, 2,function(y) {
-      names(y) <- rownames(Drug_Pscore_matrix)
+    ks_up <- apply(DrugSPESC, 2,function(y) {
+      names(y) <- rownames(DrugSPESC)
       y <- sort(y,decreasing = TRUE)
       V <- match(uppath, names(y))
       V <- V[!is.na(V)]
@@ -118,8 +153,8 @@ optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topc
       }
       return(ks_up)
     })
-    ks_down <- apply(Drug_Pscore_matrix, 2,function(y) {
-      names(y) <- rownames(Drug_Pscore_matrix)
+    ks_down <- apply(DrugSPESC, 2,function(y) {
+      names(y) <- rownames(DrugSPESC)
       y <- sort(y,decreasing = TRUE)
       V <- match(downpath, names(y))
       V <- V[!is.na(V)]
@@ -141,8 +176,8 @@ optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topc
     })
   }
   if(weight==TRUE){
-    ks_up <- apply(Drug_Pscore_matrix, 2,function(y) {
-      names(y) <- rownames(Drug_Pscore_matrix)
+    ks_up <- apply(DrugSPESC, 2,function(y) {
+      names(y) <- rownames(DrugSPESC)
       y <- sort(y,decreasing = T)
       P.rank<-names(y)
       tag.indicator <- sign(match(P.rank,
@@ -150,8 +185,8 @@ optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topc
       up.ES <- CalculateSES(tag.indicator, correl.vector = y)
       return(up.ES)
     })
-    ks_down <- apply(Drug_Pscore_matrix, 2,function(y) {
-      names(y) <- rownames(Drug_Pscore_matrix)
+    ks_down <- apply(DrugSPESC, 2,function(y) {
+      names(y) <- rownames(DrugSPESC)
       y <- sort(y,decreasing = TRUE)
       P.rank<-names(y)
       tag.indicator <- sign(match(P.rank,
@@ -171,7 +206,7 @@ optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topc
   }
   KS<-data.frame(KS,ks_up)
 
-  #names(KS)<-colnames(Drug_Pscore_matrix)
+  #names(KS)<-colnames(DrugSPESC)
   ##标准化
   MA<-max(KS[,1])
   MI<-min(KS[,1])
@@ -240,6 +275,8 @@ optimaldrugs<-function(SubPathscore,Drug_Pscore_matrix,nperm=1000,cut='top',topc
   result<-cbind(result,pvalue)
   result<-cbind(result,fdr)
   result<-result[order(result[,3],decreasing = F),]
-  colnames(result)<-c('Drug','KS','pvalue','FDR')
+  colnames(result)<-c('Drug','DES','pvalue','FDR')
+  result$DES<-round(result$DES,4)
+  result$FDR<-round(result$FDR,3)
   return(result)
 }

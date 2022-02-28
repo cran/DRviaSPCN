@@ -23,6 +23,10 @@ getDEscore <- function(inexpData, Label){
     return(logFC)
   })
   test[,1]<-logfc.vector
+  test <- as.matrix(test[!is.infinite(test[,1]),])
+  test <- as.matrix(test[!is.na(test[,1]),])
+  test <- as.matrix(test[!is.nan(test[,1]),])
+  colnames(test)<-c("Log2FC")
   return(test)
 }
 

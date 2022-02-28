@@ -7,9 +7,8 @@
 GetExample(exampleData)
 }
 \arguments{
-\item{exampleData}{A character, should be one of"GEP","label","SubPathwayInfo","GoInfo","GoSubPconGene",
-"Jaccardscore","SubPathwaymapdata","Drugs_CID","DE2SubPathresult","DE2SubPathresult_P",
-"Opdrugresult" and "heatmap.list".}
+\item{exampleData}{A character, should be one of"GEP","Slabel",
+"CentralityScoreResult","Opdrugresult" and "heatmap.list".}
 }
 \value{
 example data

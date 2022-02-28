@@ -13,7 +13,7 @@ DRviaSPCN
 
 The main goals of the DRviaSPCN package is to provide main functions and some data.
 
-         The main functions includes: 1) DE2SubPath 2) getSubpathscore 3) optimaldrugs and four visualization functions: 1) plotSPW 2) getMolecularFM 3) Disease2SPWheatmap 4) Drug2SPWheatmap.
+         The main functions includes: 1) CalCentralityScore 2) Optimaldrugs and four visualization functions: 1) plotSPW 2) getMolecularFM 3) Disease2SPheatmap 4) Drug2SPheatmap.
 
          For more details, please see browseVignettes("DRviaSPCN")
 }
