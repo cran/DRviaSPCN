@@ -44,13 +44,13 @@
 ##' Slabel<-GetExample('Slabel')
 ##'
 ##' #Run the function
-##' \donttest{Drug2SPheatmap(drugname = "methotrexate_HL60_6_8.8e-06",
-##'                  DrugSPPvalue=DrugSPPvalueMatrix,
-##'                  ExpData=GEP,Label=Slabel,pcut=0.05,bk=c(-2,2),
-##'                  cluster.rows=FALSE,cluster.cols=FALSE,show.rownames=TRUE,
-##'                  show.colnames=FALSE,col=c("navy","firebrick3"),
-##'                  cell.width=NA,cell.height=NA,scale="row",fontsize=7,
-##'                  fontsize.row=9,fontsize.col=10)}
+##' #Drug2SPheatmap(drugname = "methotrexate_HL60_6_8.8e-06",
+##' #                 DrugSPPvalue=DrugSPPvalueMatrix,
+##' #                 ExpData=GEP,Label=Slabel,pcut=0.05,bk=c(-2,2),
+##' #                 cluster.rows=FALSE,cluster.cols=FALSE,show.rownames=TRUE,
+##' #                 show.colnames=FALSE,col=c("navy","firebrick3"),
+##' #                 cell.width=NA,cell.height=NA,scale="row",fontsize=7,
+##' #                 fontsize.row=9,fontsize.col=10)
 
 
 

@@ -42,7 +42,7 @@ Function "Optimaldrugs" used to identify the optimal drugs for specific disease.
 CentralityScoreResult<-GetExample("CentralityScoreResult")
 GEP<-GetExample("GEP")
 Slabel<-GetExample("Slabel")
-\donttest{#Run the function
-Opdrugresult<-Optimaldrugs(ExpData=GEP,Label=Slabel,DrugSPESC=DrugSPESCMatrix,
-CentralityScore=CentralityScoreResult,nperm=1000,topcut=10,pcut=0.01,weight=FALSE)}
+#Run the function
+#Opdrugresult<-Optimaldrugs(ExpData=GEP,Label=Slabel,DrugSPESC=DrugSPESCMatrix,
+#CentralityScore=CentralityScoreResult,nperm=1000,topcut=10,pcut=0.01,weight=FALSE)
 }

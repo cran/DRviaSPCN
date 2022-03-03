@@ -1,7 +1,7 @@
 Package: DRviaSPCN
 Type: Package
 Title: Drug Repurposing in Cancer via a Subpathway Crosstalk Network
-Version: 0.1.1
+Version: 0.1.2
 Maintainer: Junwei Han <hanjunwei1981@163.com>
 Authors@R: c(person(given = "Junwei", family = "Han", email = "hanjunwei1981@163.com", role  = c("aut", "cre", "cph")),
              person(given = "Jiashuo", family = "Wu", role  = "aut"))
@@ -13,11 +13,11 @@ RoxygenNote: 7.1.1
 Imports: ChemmineR, GSVA, clusterProfiler, graphics, igraph, pheatmap,
         rvest, xml2, stats
 Depends: R (>= 3.6)
-Suggests: rmarkdown, knitr
+Suggests: rmarkdown, knitr, DT
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-02-25 13:10:44 UTC; Nek
+Packaged: 2022-03-02 15:09:41 UTC; DELL
 Author: Junwei Han [aut, cre, cph],
   Jiashuo Wu [aut]
 Repository: CRAN
-Date/Publication: 2022-02-28 09:40:16 UTC
+Date/Publication: 2022-03-03 16:00:02 UTC

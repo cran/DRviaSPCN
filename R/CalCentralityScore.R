@@ -42,7 +42,7 @@ go_p_score_row<-function(genecount,descore,path_size){
 ##' GEP<-GetExample('GEP')
 ##' Slabel<-GetExample('Slabel')
 ##' #Run the function
-##' \donttest{CentralityScoreResult<-CalCentralityScore(ExpData=GEP,Label=Slabel,nperm=1000)}
+##' #CentralityScoreResult<-CalCentralityScore(ExpData=GEP,Label=Slabel,nperm=1000)
 
 
 

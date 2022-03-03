@@ -35,11 +35,11 @@
 ##' Slabel<-GetExample('Slabel')
 ##' CentralityScoreResult<-GetExample('CentralityScoreResult')
 ##' #Run the function
-##' Disease2SPheatmap(CentralityScore=CentralityScoreResult,ExpData=GEP,Label=Slabel,
-##'                   pcut=0.05,bk=c(-2,2),cluster.rows=FALSE,cluster.cols=FALSE,
-##'                   show.rownames=TRUE,show.colnames=FALSE,col=c("navy","firebrick3"),
-##'                   cell.width=NA,cell.height=NA,scale="row",fontsize=7,
-##'                   fontsize.row=9,fontsize.col=10)
+##' #Disease2SPheatmap(CentralityScore=CentralityScoreResult,ExpData=GEP,Label=Slabel,
+##' #                  pcut=0.05,bk=c(-2,2),cluster.rows=FALSE,cluster.cols=FALSE,
+##' #                  show.rownames=TRUE,show.colnames=FALSE,col=c("navy","firebrick3"),
+##' #                  cell.width=NA,cell.height=NA,scale="row",fontsize=7,
+##' #                  fontsize.row=9,fontsize.col=10)
 
 
 Disease2SPheatmap<-function(CentralityScore,ExpData,Label,pcut=0.05,bk=c(-2,2),

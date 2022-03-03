@@ -25,5 +25,5 @@ library(igraph)
 GEP<-GetExample('GEP')
 Slabel<-GetExample('Slabel')
 #Run the function
-\donttest{CentralityScoreResult<-CalCentralityScore(ExpData=GEP,Label=Slabel,nperm=1000)}
+#CentralityScoreResult<-CalCentralityScore(ExpData=GEP,Label=Slabel,nperm=1000)
 }

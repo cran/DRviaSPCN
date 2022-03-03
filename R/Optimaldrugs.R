@@ -76,9 +76,9 @@ CalculateSES<-function (labels.list, correl.vector = NULL) {
 #'CentralityScoreResult<-GetExample("CentralityScoreResult")
 #'GEP<-GetExample("GEP")
 #'Slabel<-GetExample("Slabel")
-#'\donttest{#Run the function
-#'Opdrugresult<-Optimaldrugs(ExpData=GEP,Label=Slabel,DrugSPESC=DrugSPESCMatrix,
-#' CentralityScore=CentralityScoreResult,nperm=1000,topcut=10,pcut=0.01,weight=FALSE)}
+#'#Run the function
+#'#Opdrugresult<-Optimaldrugs(ExpData=GEP,Label=Slabel,DrugSPESC=DrugSPESCMatrix,
+#'#CentralityScore=CentralityScoreResult,nperm=1000,topcut=10,pcut=0.01,weight=FALSE)
 
 
 Optimaldrugs<-function(ExpData,Label,DrugSPESC,CentralityScore,nperm=1000,topcut=10,

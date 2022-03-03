@@ -1,7 +1,7 @@
 #' @title Get example data
 #' @description This function is used to achieve exxample data.
 #' @param exampleData  A character, should be one of"GEP","Slabel",
-#' "CentralityScoreResult","Opdrugresult" and "heatmap.list".
+#' "CentralityScoreResult" and "Opdrugresult".
 #' @return example data
 #' @usage GetExample(exampleData)
 #' @export
@@ -62,9 +62,5 @@ GetExample<-function(exampleData){
     dataset<- get("Opdrugresult",envir=envData)
     return(dataset)
   }
-  if (exampleData=="heatmap.list")
-  {
-    dataset<- get("heatmap.list",envir=envData)
-    return(dataset)
-  }
+
 }

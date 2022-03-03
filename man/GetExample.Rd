@@ -8,7 +8,7 @@ GetExample(exampleData)
 }
 \arguments{
 \item{exampleData}{A character, should be one of"GEP","Slabel",
-"CentralityScoreResult","Opdrugresult" and "heatmap.list".}
+"CentralityScoreResult" and "Opdrugresult".}
 }
 \value{
 example data
