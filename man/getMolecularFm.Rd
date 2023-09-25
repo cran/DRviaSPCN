@@ -4,10 +4,14 @@
 \alias{getMolecularFm}
 \title{Plot chemical molecular formula  of drugs}
 \usage{
-getMolecularFm(drugname = "", main = "", sub = "")
+getMolecularFm(drugid = NULL, drugname = NULL,sdfSET,main = "", sub = "")
 }
 \arguments{
+\item{drugid}{A character string of DrugBank ID.}
+
 \item{drugname}{A character string of drug name.}
+
+\item{sdfSET}{Sdf data of drug structure.}
 
 \item{main}{An overall title for the chemical structure graph.}
 
@@ -20,10 +24,17 @@ Chemical molecular formula  of the drug or compound.
 The function "getMolecularFm" outputs the chemical molecular formula  of a drug or compound . The results can be visualized by the "plot" function.
 }
 \examples{
-##Load depend package
-library(ChemmineR)
-library(rvest)
+#"sdfSET" has been uploaded to the
+#github repository.Users can download and install through "install_github"
+#function and set parameter url="hanjunwei-lab/DRviaSPCNData".
+#After installing and loading package "DRviaSPCNData",
+#users can use the following command to get the data.
 # Obtain molecular formula and visualize it.
-Mole_formula<-getMolecularFm(drugname ="methotrexate")
-plot(Mole_formula)
+\donttest{
+#Get the sdf data of drug structure from DRviaSPCNData package
+#library("Chemminer")
+#sdf<-GetData('sdfSET')
+#Run the function
+#Mole_formula<-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
+#plot(Mole_formula)}
 }

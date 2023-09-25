@@ -57,14 +57,18 @@ library(igraph)
 plotSPW("00020_4")
 
 
-## ----results='hide',message=FALSE,fig.width=7,fig.height=5--------------------
-###Load depend package
-library(ChemmineR)
-library(rvest)
-###Obtain molecular formula and visualize it
-Mole_formula<-getMolecularFm(drugname ="methotrexate")
-plot(Mole_formula)
+## ----eval=FALSE, include=FALSE------------------------------------------------
+#  #Get the drug sdf data from DRviaSPCNData package
+#  library(ChemmineR)
+#  sdf<-DRviaSPCNData::GetData("sdfSET")
 
+## ----eval=FALSE, message=FALSE, results="hide"--------------------------------
+#  Mole_formula<-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
+#  plot(Mole_formula)
+#  
+
+## ----fig.height=3, fig.width=5, R,echo=FALSE----------------------------------
+knitr::include_graphics("../inst/structure.png")
 
 ## ----message=FALSE,results='hide',fig.width=7,fig.height=5--------------------
 ###Load depend package

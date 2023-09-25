@@ -9,7 +9,7 @@
 
 GetExample<-function(exampleData){
   if(!exists("envData")) {
-    utils::data("envData",package="Disease2Drug")
+    utils::data("envData",package="DRviaSPCN")
   }
 
   if (exampleData=="GEP")
@@ -62,5 +62,11 @@ GetExample<-function(exampleData){
     dataset<- get("Opdrugresult",envir=envData)
     return(dataset)
   }
+  if (exampleData=="dn")
+  {
+    dataset<- get("dn",envir=envData)
+    return(dataset)
+  }
+
 
 }

@@ -1,14 +1,14 @@
 getKS<-function(s,l) {
-  if(class(s)=='character'&class(l)=='character'){
+  if(is.character(s)&is.character(l)){
     V <- match(s,l)
   }
-  if(class(s)=='numeric'&class(l)=='character'){
+  if(is.numeric(s)&is.character(l)){
     V <- match(names(s),l)
   }
-  if(class(s)=='character'&class(l)=='numeric'){
+  if(is.character(s)&is.numeric(l)){
     V <- match(s,names(l))
   }
-  if(class(s)=='numeric'&class(l)=='numeric'){
+  if(is.numeric(s)&is.numeric(l)){
     V <- match(names(s),names(l))
   }
   V <- V[!is.na(V)]

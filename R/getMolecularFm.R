@@ -1,51 +1,48 @@
 #' @title Plot chemical molecular formula  of drugs
 #' @description The function "getMolecularFm" outputs the chemical molecular formula  of a drug or compound . The results can be visualized by the "plot" function.
+#' @param drugid A character string of DrugBank ID.
 #' @param drugname A character string of drug name.
+#' @param sdfSET Sdf data of drug structure.
 #' @param main An overall title for the chemical structure graph.
 #' @param sub A sub title for the chemical structure graph.
 #' @return Chemical molecular formula  of the drug or compound.
-#' @importFrom rvest html_text
-#' @importFrom ChemmineR read.SDFset
-#' @importFrom xml2 read_html
-#' @usage getMolecularFm(drugname = "", main = "", sub = "")
+#' @usage getMolecularFm(drugid = NULL, drugname = NULL,sdfSET,main = "", sub = "")
 #' @export
 #' @examples
-#' ##Load depend package
-#' library(ChemmineR)
-#' library(rvest)
+#'#"sdfSET" has been uploaded to the
+#'#github repository.Users can download and install through "install_github"
+#'#function and set parameter url="hanjunwei-lab/DRviaSPCNData".
+#'#After installing and loading package "DRviaSPCNData",
+#'#users can use the following command to get the data.
 #' # Obtain molecular formula and visualize it.
-#' Mole_formula<-getMolecularFm(drugname ="methotrexate")
-#' plot(Mole_formula)
+#' \donttest{
+#' #Get the sdf data of drug structure from DRviaSPCNData package
+#' #library("Chemminer")
+#' #sdf<-GetData('sdfSET')
+#' #Run the function
+#' #Mole_formula<-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
+#' #plot(Mole_formula)}
 
 
 
-getMolecularFm<-function(drugname = "", main = "", sub = "") {
-  haveChemmineR <- PackageLoaded("ChemmineR")
-  havervest <- PackageLoaded("rvest")
-  if (haveChemmineR == FALSE) {
-    stop("The 'ChemmineR' library, should be loaded first")
+getMolecularFm<-function(drugid = NULL, drugname = NULL,sdfSET,main = "", sub = "") {
+  dn<-GetExample('dn')
+
+  if(is.null(drugid)==TRUE){
+    drugname <- unlist(strsplit(drugname, "\\("))[1]
+    drugname1 <- tolower(drugname)
+    drugid<-dn[which(dn$Drug.name==drugname1),1]
   }
-  if (havervest == FALSE) {
-    stop("The 'rvest' library, should be loaded first")
+  if(length(drugid)==0){
+    print("Sorry, the drug ID or name you provided is not in our records.")
   }
-  drugname <- unlist(strsplit(drugname, "\\("))[1]
-  drugname1 <- tolower(drugname)
-  Drugs_CID <- GetExample("Drugs_CID")
-  drugCid <- Drugs_CID[which(Drugs_CID[, 1] == drugname1),
-                       2]
-  drug_url <- paste("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/",
-                    drugCid, "/record/SDF/?record_type=2d&response_type=display",
-                    sep = "")
-  cw <- try(read_html(drug_url))
-  if ("try-error" %in% class(cw)) {
-    stop("Please ensure smooth network connection")
+
+  sdfset<-sdfSET[which(sdfSET@ID==drugid)]
+  if(length(sdfset)==0){
+    stop("Sorry, the drug ID or name you provided is not in our records.")
   }
-  drugnr <- html_text(cw)
-  drugnr <- strsplit(drugnr, "\n")
-  drugnr <- unlist(drugnr)
-  sdfset <- read.SDFset(drugnr)
   if (main == "") {
-    sdfset@ID <- drugname
+    sdfset@ID <- drugid
   }
   else {
     sdfset@ID <- main
@@ -53,7 +50,6 @@ getMolecularFm<-function(drugname = "", main = "", sub = "") {
   return(sdfset)
 
 }
-
 
 
 

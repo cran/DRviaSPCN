@@ -1,5 +1,5 @@
 ---
-title: "DRviaSPCN User Guide"
+title: "DRviaSPCN"
 author: "Jiashuo Wu, Junwei Han"
 output:
   rmarkdown::html_vignette:
@@ -142,14 +142,18 @@ plotSPW("00020_4")
   
 The commands are as follows:  </font>
 
-```{r,results='hide',message=FALSE,fig.width=7,fig.height=5}
-###Load depend package
+```{r eval=FALSE, include=FALSE}
+#Get the drug sdf data from DRviaSPCNData package
 library(ChemmineR)
-library(rvest)
-###Obtain molecular formula and visualize it
-Mole_formula<-getMolecularFm(drugname ="methotrexate")
+sdf<-DRviaSPCNData::GetData("sdfSET")
+```
+```{r eval=FALSE, message=FALSE, results="hide"}
+Mole_formula<-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
 plot(Mole_formula)
 
+```
+```{R fig.height=3, fig.width=5, R,echo=FALSE}
+knitr::include_graphics("../inst/structure.png")
 ```
 
 *****
