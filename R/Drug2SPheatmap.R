@@ -19,6 +19,7 @@
 ##' @param fontsize.col Fontsize for colnames (default: 10).
 ##' @return A heat map
 ##' @importFrom GSVA gsva
+##' @importFrom GSVA ssgseaParam
 ##' @importFrom pheatmap pheatmap
 ##' @importFrom grDevices colorRampPalette
 ##' @usage Drug2SPheatmap(drugname="",DrugSPPvalue,ExpData,Label,pcut=0.05,
@@ -89,8 +90,9 @@ Drug2SPheatmap<-function(drugname="",DrugSPPvalue,ExpData,Label,pcut=0.05,bk=c(-
   names(pl)<-sp[,1]
 
   #library(GSVA)
-  spw_matrix = gsva(as.matrix(ExpData), pl, method = "ssgsea",
-                    kcdf = "Gaussian", abs.ranking = TRUE,min.sz=2)
+  ssgseaPar <- ssgseaParam(as.matrix(ExpData), pl,minSize=2)
+  spw_matrix = gsva(ssgseaPar,verbose=T)
+
   colnames(spw_matrix)[which(Label=='0')]='normal'
   colnames(spw_matrix)[which(Label=='1')]='disease'
   spw_matrix<-spw_matrix[,order(colnames(spw_matrix))]

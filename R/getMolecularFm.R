@@ -6,6 +6,8 @@
 #' @param main An overall title for the chemical structure graph.
 #' @param sub A sub title for the chemical structure graph.
 #' @return Chemical molecular formula  of the drug or compound.
+#' @importFrom sp plot
+#' @importFrom ChemmineR sdf2ap
 #' @usage getMolecularFm(drugid = NULL, drugname = NULL,sdfSET,main = "", sub = "")
 #' @export
 #' @examples
@@ -47,7 +49,8 @@ getMolecularFm<-function(drugid = NULL, drugname = NULL,sdfSET,main = "", sub = 
   else {
     sdfset@ID <- main
   }
-  return(sdfset)
+  ap <- sdf2ap(sdfset[[1]])
+  sp::plot(sdfset)
 
 }
 

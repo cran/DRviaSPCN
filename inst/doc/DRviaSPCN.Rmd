@@ -1,5 +1,5 @@
 ---
-title: "DRviaSPCN"
+title: "DRviaSPCN User Guide"
 author: "Jiashuo Wu, Junwei Han"
 output:
   rmarkdown::html_vignette:
@@ -51,6 +51,7 @@ In addition, the essential data `DrugSPESCMatrix` and `DrugSPPvalueMatrix` which
 
 ```{r eval=FALSE}
 ### Download DRviaSPCNData package from GitHub
+
 library(devtools)
 install_github("hanjunwei-lab/DRviaSPCNData",force = TRUE)
 library(DRviaSPCNData)
@@ -141,19 +142,17 @@ plotSPW("00020_4")
 <font face="微软雅黑">  The function `getMolecularFm` can obtain a chemical molecular formula of the drug or compound. Then users could visualize the molecular formula through function "plot".
   
 The commands are as follows:  </font>
-
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE}
+###Get the result of this function
+sdf<-GetExample('methotrexate')
+```
+```{r,eval=FALSE}
 #Get the drug sdf data from DRviaSPCNData package
-library(ChemmineR)
 sdf<-DRviaSPCNData::GetData("sdfSET")
 ```
-```{r eval=FALSE, message=FALSE, results="hide"}
-Mole_formula<-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
-plot(Mole_formula)
+```{r,results='hide',message=FALSE,fig.width=7,fig.height=5}
+getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
 
-```
-```{R fig.height=3, fig.width=5, R,echo=FALSE}
-knitr::include_graphics("../inst/structure.png")
 ```
 
 *****

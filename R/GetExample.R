@@ -67,6 +67,10 @@ GetExample<-function(exampleData){
     dataset<- get("dn",envir=envData)
     return(dataset)
   }
-
+  if (exampleData=="methotrexate")
+  {
+    dataset<- get("methotrexate",envir=envData)
+    return(dataset)
+  }
 
 }
