@@ -17,7 +17,7 @@ library(DRviaSPCN)
 ```
 
 ### <font face="微软雅黑"> Introduce </font>
-<font face="微软雅黑"> We developed a novel software package (DRviaSPCN) that enables repurposing drugs via a subpathway (SP) crosstalk network. The main process include construction of the SP network and calculation of the centrality scores of SPs to reflect the influence of SP crosstalk, calculating the enrichment score of subpathways and weighting them with corresponding centrality score to get weighted enrichment score(weighted-ES), calculation of enrichment scores of drug- and disease-induced dysfunctional SPs and weighted them by the centrality scores of SPs, evaluation of the drug-disease reverse association at the weighted SP level, identification of cancer candidate drugs. There are also several functions used to visualize the results such as visualization of the subpathway network structure of interest, chemical molecular formula of the drug or compound, and heatmap of the expression of subpathways in different sample types.
+<font face="微软雅黑"> We developed a novel software package (DRviaSPCN) that enables repurposing drugs via a subpathway (SP) crosstalk network. The main process include construction of the SP network and calculation of the centrality scores of SPs to reflect the influence of SP crosstalk, calculating the enrichment score of subpathways and weighting them with corresponding centrality score to get weighted enrichment score(weighted-ES), calculation of enrichment scores of drug- and disease-induced dysfunctional SPs and weighted them by the centrality scores of SPs, evaluation of the drug-disease reverse association at the weighted SP level, identification of cancer candidate drugs. There are also several functions used to visualize the results such as visualization of the subpathway network structure of interest and heatmap of the expression of subpathways in different sample types.
 
 This vignette illustrates how to easily use the **DRviaSPCN package**. Here, with the use of functions in this package, users could identify potential therapeutic drugs for disease through estimating drug-disease reverse association.
 
@@ -38,8 +38,6 @@ This vignette illustrates how to easily use the **DRviaSPCN package**. Here, wit
 +  This package provides the `Optimaldrugs` function to calculate the DES of drugs and corresponding p-value.
   
 +  This package provides the `plotSPW` function to plot SP network structure.
-
-+  This package provides the `getMolecularFM` function to plot the chemical molecular formula of the drug or compound.
 
 +  This package provides the `Disease2SPheatmap` function to plot heatmap of the activities of subpathways in different sample types that are regulated by disease.
 
@@ -136,28 +134,8 @@ plotSPW("00020_4")
 
 *****
 
-## <font face="微软雅黑"> Visualize 2: Plot a chemical molecular formula of the drug or compound .</font>
 
-#####
-<font face="微软雅黑">  The function `getMolecularFm` can obtain a chemical molecular formula of the drug or compound. Then users could visualize the molecular formula through function "plot".
-  
-The commands are as follows:  </font>
-```{r echo=FALSE}
-###Get the result of this function
-sdf<-GetExample('methotrexate')
-```
-```{r,eval=FALSE}
-#Get the drug sdf data from DRviaSPCNData package
-sdf<-DRviaSPCNData::GetData("sdfSET")
-```
-```{r,results='hide',message=FALSE,fig.width=7,fig.height=5}
-getMolecularFm(drugname ="methotrexate",sdfSET=sdf)
-
-```
-
-*****
-
-## <font face="微软雅黑"> Visualize 3: Plot a heatmap of the subpathways that are regulated by disease.</font>
+## <font face="微软雅黑"> Visualize 2: Plot a heatmap of the subpathways that are regulated by disease.</font>
 
 #####
 <font face="微软雅黑">  The function `Disease2SPheatmap` plots a heat map of the subpathways that are regulated by disease. The input is the result of function `CalCentralityScore`, disease gene expression profile and sample class in the expression profile. We map subpathways to the disease gene expression through ssgsea to get a subpathway abundance matrix. Then we visualize the matrix by heatmap. Users could change the threshold that is used to screen significant subpathways through the param *pcut*.
@@ -180,7 +158,7 @@ Disease2SPheatmap(CentralityScore=CentralityScoreResult,ExpData=GEP,Label=Slabel
 
 *****
 
-## <font face="微软雅黑"> Visualize 4: Plot heatmaps of the subpathways that are regulated by drugs.</font>
+## <font face="微软雅黑"> Visualize 3: Plot heatmaps of the subpathways that are regulated by drugs.</font>
 
 #####
 <font face="微软雅黑">  The function `Drug2SPheatmap` plots heatmaps of the subpathways that are regulated by drugs. The function input is a character which is drug name, disease gene expression profile and sample class in the expression profile. We map subpathways to the disease gene expression through ssgsea to get a subpathway abundance matrix. Then we visualize the matrix by heatmap. Users could change the threshold that is used to screen significant subpathways through the param *pcut*. The result of this function is a list including all heatmaps.
